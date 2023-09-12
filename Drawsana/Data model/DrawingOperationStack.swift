@@ -49,7 +49,13 @@ public class DrawingOperationStack {
     undoStack.removeLast()
     delegate?.drawingOperationStackDidUndo(self, operation: operation)
   }
-
+  /// removeLast the latest operation, if any
+  @objc public func removeLast() {
+      guard let operation = undoStack.last else { return }
+      operation.revert(drawing: drawing)
+      undoStack.removeLast()
+      delegate?.drawingOperationStackDidUndo(self, operation: operation)
+    }
   /// Redo the most recently undone operation, if any
   @objc public func redo() {
     guard let operation = redoStack.last else { return }
