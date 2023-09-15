@@ -443,9 +443,6 @@ extension DrawsanaView: ToolSettingsDelegate {
             if let selectedShape = selectedShape {
                 self.operationStack.apply(operation: RemoveShapeOperation(shape: selectedShape))
             }
-        }else
-        if let tempTool:DashedPenTool = self.tool as? DashedPenTool{
-            self.operationStack.removeLast();
         }
       applySelectionViewState()
       // DrawingView's delegate might set this, so notify the tool if it happens
