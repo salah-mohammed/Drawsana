@@ -435,14 +435,22 @@ extension DrawsanaView: DrawingDelegate {
 }
 
 extension DrawsanaView: ToolSettingsDelegate {
-  func toolSettings(
-    _ toolSettings: ToolSettings,
-    didSetSelectedShape selectedShape: ShapeSelectable?)
-  {
-    applySelectionViewState()
-    // DrawingView's delegate might set this, so notify the tool if it happens
-    tool?.apply(context: toolOperationContext, userSettings: userSettings)
-  }
+    func toolSettings(
+      _ toolSettings: ToolSettings,
+      didSetSelectedShape selectedShape: ShapeSelectable?)
+    {
+        if let tempTool:SelectionWithDeleteTool = self.tool as? SelectionWithDeleteTool{
+            if let selectedShape = selectedShape {
+                self.operationStack.apply(operation: RemoveShapeOperation(shape: selectedShape))
+            }
+        }else
+        if let tempTool:DashedPenTool = self.tool as? DashedPenTool{
+            self.operationStack.removeLast();
+        }
+      applySelectionViewState()
+      // DrawingView's delegate might set this, so notify the tool if it happens
+      tool?.apply(context: toolOperationContext, userSettings: userSettings)
+    }
 
   func toolSettings(
     _ toolSettings: ToolSettings,

@@ -32,10 +32,11 @@ open class DrawingToolForShapeWithTwoPoints: DrawingTool {
   }
 
   public func handleDragStart(context: ToolOperationContext, point: CGPoint) {
+    let newUserSettings = self.contextSettings(context.userSettings);
     shapeInProgress = makeShape()
     shapeInProgress?.a = point
     shapeInProgress?.b = point
-    shapeInProgress?.apply(userSettings: context.userSettings)
+    shapeInProgress?.apply(userSettings:newUserSettings)
   }
 
   public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
@@ -58,9 +59,18 @@ open class DrawingToolForShapeWithTwoPoints: DrawingTool {
   public func renderShapeInProgress(transientContext: CGContext) {
     shapeInProgress?.render(in: transientContext)
   }
-
+  func contextSettings(_ userSettings:UserSettings)->UserSettings{
+     let newUserSettings = UserSettings.init(strokeColor: userSettings.strokeColor,
+                                               fillColor: userSettings.fillColor,
+                                               strokeWidth:2,
+                                               fontName: userSettings.fontName,
+                                               fontSize: userSettings.fontSize)
+      newUserSettings.delegate = userSettings.delegate;
+      return newUserSettings
+    }
   public func apply(context: ToolOperationContext, userSettings: UserSettings) {
-    shapeInProgress?.apply(userSettings: userSettings)
+    let newUserSettings = self.contextSettings(userSettings);
+    shapeInProgress?.apply(userSettings:newUserSettings)
     context.toolSettings.isPersistentBufferDirty = true
   }
 }

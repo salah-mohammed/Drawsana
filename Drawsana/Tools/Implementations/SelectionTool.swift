@@ -16,8 +16,8 @@ public protocol SelectionToolDelegate: AnyObject {
 }
 
 public class SelectionTool: DrawingTool {
-  public let name = "Selection"
-  
+  public var name: String { return "Selection" }
+
   public var isProgressive: Bool { return false }
 
   /// You may set yourself as the delegate to be notified when special selection
@@ -143,4 +143,8 @@ public class SelectionTool: DrawingTool {
     context.toolSettings.selectedShape = newSelectedShape
     isUpdatingSelection = false
   }
+}
+
+public class SelectionWithDeleteTool: SelectionTool {
+    public override var name: String { return "SelectionWithDelete" }
 }
