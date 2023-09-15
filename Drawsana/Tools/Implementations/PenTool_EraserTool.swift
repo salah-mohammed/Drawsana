@@ -356,7 +356,8 @@ public class DashedPenTool: DrawingTool {
     guard let shapeInProgress = shapeInProgress else { return }
     shapeInProgress.isFinished = true
     shapeInProgress.apply(userSettings:userSettings)
-    context.operationStack.apply(operation: AddShapeOperation(shape: shapeInProgress))
+    //context.operationStack.apply(operation: AddShapeOperation(shape: shapeInProgress))
+    //context.operationStack.removeLast(shapeInProgress:self.shapeInProgress);
     self.shapeInProgress = nil
     shapeInProgressBuffer = nil
   }

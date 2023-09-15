@@ -56,6 +56,15 @@ public class DrawingOperationStack {
       undoStack.removeLast()
       delegate?.drawingOperationStackDidUndo(self, operation: operation)
     }
+    
+    func removeLast(shapeInProgress:DashedPenShape?) {
+         guard let operation:AddShapeOperation = undoStack.last as? AddShapeOperation else { return }
+          if (operation.shape as? DashedPenShape)?.id == shapeInProgress?.id{
+             operation.revert(drawing: drawing)
+             undoStack.removeLast()
+             delegate?.drawingOperationStackDidUndo(self, operation: operation)
+         }
+     }
   /// Redo the most recently undone operation, if any
   @objc public func redo() {
     guard let operation = redoStack.last else { return }
