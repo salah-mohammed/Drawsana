@@ -60,7 +60,11 @@ open class DrawingToolForShapeWithTwoPoints: DrawingTool {
     shapeInProgress?.render(in: transientContext)
   }
   func contextSettings(_ userSettings:UserSettings)->UserSettings{
-     let newUserSettings = UserSettings.init(strokeColor: userSettings.strokeColor,
+      var color:UIColor = UIColor.black
+      if #available(iOS 13.0, *) {
+      color = UIColor.label
+      }
+     let newUserSettings = UserSettings.init(strokeColor:color,
                                                fillColor: userSettings.fillColor,
                                                strokeWidth:2,
                                                fontName: userSettings.fontName,

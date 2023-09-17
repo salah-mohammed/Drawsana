@@ -34,7 +34,11 @@ open class DrawingToolForShapeWithThreePoints: DrawingTool {
   public func handleTap(context: ToolOperationContext, point: CGPoint) {
   }
   public func contextSettings(_ userSettings:UserSettings)->UserSettings{
-       let newUserSettings = UserSettings.init(strokeColor: userSettings.strokeColor,
+      var color:UIColor = UIColor.black
+      if #available(iOS 13.0, *) {
+      color = UIColor.label
+      }
+      let newUserSettings = UserSettings.init(strokeColor:color,
                                                  fillColor: userSettings.fillColor,
                                                  strokeWidth:2,
                                                  fontName: userSettings.fontName,
