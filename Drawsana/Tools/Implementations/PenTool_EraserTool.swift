@@ -131,7 +131,11 @@ public class FixedPenTool: DrawingTool {
   }
 
   func contextSettings(context:ToolOperationContext)->UserSettings{
-        let userSettings = UserSettings.init(strokeColor: context.userSettings.strokeColor,
+      var color:UIColor = UIColor.black
+      if #available(iOS 13.0, *) {
+      color = UIColor.label
+      }
+      let userSettings = UserSettings.init(strokeColor:color,
                                              fillColor: context.userSettings.fillColor,
                                              strokeWidth:2,
                                              fontName: context.userSettings.fontName,
@@ -150,11 +154,7 @@ public class FixedPenTool: DrawingTool {
     shape.start = point
     shape.isFinished = false
     shape.apply(userSettings:userSettings)
-    if #available(iOS 13.0, *) {
-    shape.strokeColor = UIColor.label
-    } else {
-    shape.strokeColor = UIColor.black
-    }
+    shape.strokeColor = shape.strokeColor.withAlphaComponent(1)
   }
 
   public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
@@ -313,7 +313,11 @@ public class DashedPenTool: DrawingTool {
   }
 
     func contextSettings(context:ToolOperationContext)->UserSettings{
-        let userSettings = UserSettings.init(strokeColor: context.userSettings.strokeColor,
+        var color:UIColor = UIColor.black
+        if #available(iOS 13.0, *) {
+        color = UIColor.label
+        }
+        let userSettings = UserSettings.init(strokeColor:color,
                                              fillColor: context.userSettings.fillColor,
                                              strokeWidth:2,
                                              fontName: context.userSettings.fontName,
@@ -332,11 +336,7 @@ public class DashedPenTool: DrawingTool {
     shape.start = point
     shape.isFinished = false
     shape.apply(userSettings:userSettings)
-    if #available(iOS 13.0, *) {
-    shape.strokeColor = UIColor.label
-    } else {
-    shape.strokeColor = UIColor.black
-    }
+    shape.strokeColor = shape.strokeColor.withAlphaComponent(1)
   }
 
   public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
