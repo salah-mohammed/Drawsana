@@ -150,7 +150,11 @@ public class FixedPenTool: DrawingTool {
     shape.start = point
     shape.isFinished = false
     shape.apply(userSettings:userSettings)
-    shape.strokeColor = shape.strokeColor.withAlphaComponent(1)
+    if #available(iOS 13.0, *) {
+    shape.strokeColor = UIColor.label
+    } else {
+    shape.strokeColor = UIColor.black
+    }
   }
 
   public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
@@ -328,7 +332,11 @@ public class DashedPenTool: DrawingTool {
     shape.start = point
     shape.isFinished = false
     shape.apply(userSettings:userSettings)
-    shape.strokeColor = shape.strokeColor.withAlphaComponent(1)
+    if #available(iOS 13.0, *) {
+    shape.strokeColor = UIColor.label
+    } else {
+    shape.strokeColor = UIColor.black
+    }
   }
 
   public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
