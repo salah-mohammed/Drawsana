@@ -33,14 +33,22 @@ open class DrawingToolForShapeWithThreePoints: DrawingTool {
   
   public func handleTap(context: ToolOperationContext, point: CGPoint) {
   }
-  
+  public func contextSettings(_ userSettings:UserSettings)->UserSettings{
+       let newUserSettings = UserSettings.init(strokeColor: userSettings.strokeColor,
+                                                 fillColor: userSettings.fillColor,
+                                                 strokeWidth:2,
+                                                 fontName: userSettings.fontName,
+                                                 fontSize: userSettings.fontSize)
+        newUserSettings.delegate = userSettings.delegate;
+        return newUserSettings
+    }
   public func handleDragStart(context: ToolOperationContext, point: CGPoint) {
     if dragEndCount == 0 {
       shapeInProgress = makeShape()
       shapeInProgress?.a = point
       shapeInProgress?.b = point
       shapeInProgress?.c = point
-      shapeInProgress?.apply(userSettings: context.userSettings)
+      shapeInProgress?.apply(userSettings:contextSettings(context.userSettings))
       return
     }
     shapeInProgress?.c = point
@@ -80,7 +88,7 @@ open class DrawingToolForShapeWithThreePoints: DrawingTool {
   }
   
   public func apply(context: ToolOperationContext, userSettings: UserSettings) {
-    shapeInProgress?.apply(userSettings: userSettings)
+    shapeInProgress?.apply(userSettings:contextSettings(userSettings))
     context.toolSettings.isPersistentBufferDirty = true
   }
 }
