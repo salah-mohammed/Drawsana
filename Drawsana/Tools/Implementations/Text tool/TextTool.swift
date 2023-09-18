@@ -102,19 +102,19 @@ public class TextTool: NSObject, DrawingTool {
     return
   }
   //
-  private func contextSettings(_ userSettings:UserSettings)->UserSettings{
-        var color:UIColor = UIColor.black
-        if #available(iOS 13.0, *) {
-            color = UIColor.label
-        }
-        let newUserSettings = UserSettings.init(strokeColor:color,
-                                                fillColor: userSettings.fillColor,
-                                                strokeWidth:userSettings.strokeWidth,
-                                                fontName: userSettings.fontName,
-                                                fontSize: userSettings.fontSize)
-        newUserSettings.delegate = userSettings.delegate;
-        return newUserSettings
-    }
+//  private func contextSettings(_ userSettings:UserSettings)->UserSettings{
+//        var color:UIColor = UIColor.black
+//        if #available(iOS 13.0, *) {
+//            color = UIColor.label
+//        }
+//        let newUserSettings = UserSettings.init(strokeColor:color,
+//                                                fillColor: userSettings.fillColor,
+//                                                strokeWidth:userSettings.strokeWidth,
+//                                                fontName: userSettings.fontName,
+//                                                fontSize: userSettings.fontSize)
+//        newUserSettings.delegate = userSettings.delegate;
+//        return newUserSettings
+//    }
     //
   private func handleTapWhenNoShapeIsActive(context: ToolOperationContext, point: CGPoint) {
     if let tappedShape = context.drawing.getShape(of: TextShape.self, at: point) {
@@ -122,7 +122,7 @@ public class TextTool: NSObject, DrawingTool {
       context.toolSettings.isPersistentBufferDirty = true
     } else {
       let newShape = TextShape()
-      newShape.apply(userSettings:contextSettings(context.userSettings))
+      newShape.apply(userSettings:context.userSettings)
       self.selectedShape = newShape
       newShape.transform.translation = delegate?.textToolPointForNewText(tappedPoint: point) ?? point
       beginEditing(shape: newShape, context: context)
@@ -179,7 +179,7 @@ public class TextTool: NSObject, DrawingTool {
   }
 
   public func apply(context: ToolOperationContext, userSettings: UserSettings) {
-    selectedShape?.apply(userSettings:contextSettings(userSettings))
+    selectedShape?.apply(userSettings:userSettings)
     updateTextView()
     if context.toolSettings.selectedShape == nil {
       selectedShape = nil
