@@ -70,13 +70,36 @@ public class DrawsanaView: UIView {
   public lazy var operationStack: DrawingOperationStack = {
     return DrawingOperationStack(drawing: drawing)
   }()
-
+    //
+    private func contextSettings(_ userSettings:UserSettings)->UserSettings{
+          var color:UIColor = UIColor.black
+          if #available(iOS 13.0, *) {
+              color = UIColor.label
+          }
+          let newUserSettings = UserSettings.init(strokeColor:color,
+                                                  fillColor:color,
+                                                  strokeWidth:userSettings.strokeWidth,
+                                                  fontName: userSettings.fontName,
+                                                  fontSize: userSettings.fontSize)
+          newUserSettings.delegate = userSettings.delegate;
+          return newUserSettings
+      }
+      
   private var toolOperationContext: ToolOperationContext {
-    return ToolOperationContext(
-      drawing: drawing,
-      operationStack: operationStack,
-      userSettings: userSettings,
-      toolSettings: toolSettings)
+      if self.tool is TextTool{
+          return ToolOperationContext(
+            drawing: drawing,
+            operationStack: operationStack,
+            userSettings:contextSettings(userSettings),
+            toolSettings: toolSettings)
+      }else{
+          return ToolOperationContext(
+            drawing: drawing,
+            operationStack: operationStack,
+            userSettings: userSettings,
+            toolSettings: toolSettings)
+      }
+
   }
 
   /// Configurable inset for the selection indicator
@@ -446,7 +469,7 @@ extension DrawsanaView: ToolSettingsDelegate {
         }
       applySelectionViewState()
       // DrawingView's delegate might set this, so notify the tool if it happens
-      tool?.apply(context: toolOperationContext, userSettings: userSettings)
+        tool?.apply(context: toolOperationContext, userSettings: toolOperationContext.userSettings)
     }
 
   func toolSettings(
