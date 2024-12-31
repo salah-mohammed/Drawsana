@@ -12,6 +12,9 @@ import CoreGraphics
  Add a shape to the drawing. Undoing removes the shape.
  */
 public struct AddShapeOperation: DrawingOperation {
+    private enum CodingKeys: String, CodingKey {
+      case shape
+    }
   let shape: Shape
 
   public init(shape: Shape) {
@@ -25,12 +28,49 @@ public struct AddShapeOperation: DrawingOperation {
   public func revert(drawing: Drawing) {
     drawing.remove(shape: shape)
   }
+  public var currentShape:Shape{
+        return shape;
+   }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.shape, forKey:.shape)
+    }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        var tempShape:Shape!
+        if let shape = try? values.decode(EllipseShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(LineShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(NgonShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(PenShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(RectShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(StarShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(TextShape.self, forKey:.shape){
+            tempShape=shape
+        }
+        self.shape=tempShape
+    }
 }
 
 /**
  Remove a shape from the drawing. Undoing adds the shape back.
  */
 public struct RemoveShapeOperation: DrawingOperation {
+    private enum CodingKeys: String, CodingKey {
+      case shape
+    }
   let shape: Shape
 
   public init(shape: Shape) {
@@ -44,6 +84,39 @@ public struct RemoveShapeOperation: DrawingOperation {
   public func revert(drawing: Drawing) {
     drawing.add(shape: shape)
   }
+    public var currentShape:Shape{
+          return shape;
+     }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.shape, forKey:.shape)
+    }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        var tempShape:Shape!
+        if let shape = try? values.decode(EllipseShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(LineShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(NgonShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(PenShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(RectShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(StarShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(TextShape.self, forKey:.shape){
+            tempShape=shape
+        }
+        self.shape=tempShape
+    }
 }
 
 /**
@@ -51,7 +124,12 @@ public struct RemoveShapeOperation: DrawingOperation {
  back to its original value.
  */
 public struct ChangeTransformOperation: DrawingOperation {
-  let shape: ShapeWithTransform
+    public enum CodingKeys: String, CodingKey {
+      case shape,transform, originalTransform
+    }
+    
+    
+    var shape: ShapeWithTransform
   let transform: ShapeTransform
   let originalTransform: ShapeTransform
 
@@ -70,6 +148,62 @@ public struct ChangeTransformOperation: DrawingOperation {
     shape.transform = originalTransform
     drawing.update(shape: shape)
   }
+    
+    public var currentShape:Shape{
+          return shape;
+     }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.shape, forKey:.shape)
+        try container.encode(self.originalTransform, forKey:.originalTransform)
+        try container.encode(self.transform, forKey:.transform)
+
+    }
+//    func valuee(decoder: Decoder,_ key:CodingKeys)->Shape?{
+//        typealias shapeType = (AnyObject&Decodable).Type
+//        let values = try? decoder.container(keyedBy: CodingKeys.self)
+//        let classs:[shapeType] = [AngleShape.self,
+//        EllipseShape.self,
+//        LineShape.self,
+//        NgonShape.self,
+//        PenShape.self,
+//        RectShape.self,
+//        StarShape.self,
+//        TextShape.self]
+//
+//        for  classItem in classs{
+//            return try? values?.decode(classItem, forKey:key)
+//        }
+//        return nil
+//    }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.transform = try values.decode(ShapeTransform.self, forKey:.transform)
+        self.originalTransform = try values.decode(ShapeTransform.self, forKey:.originalTransform)
+        var tempShape:ShapeWithTransform!
+        if let shape = try? values.decode(EllipseShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(LineShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(NgonShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(PenShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(RectShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(StarShape.self, forKey:.shape){
+            tempShape=shape
+        }else
+        if let shape = try? values.decode(TextShape.self, forKey:.shape){
+            tempShape=shape
+        }
+        self.shape=tempShape
+    }
 }
 
 /**
@@ -83,10 +217,18 @@ public struct ChangeTransformOperation: DrawingOperation {
  "add empty text shape" operation in the undo stack.
  */
 public struct EditTextOperation: DrawingOperation {
+    private enum CodingKeys: String, CodingKey {
+      case shape,originalText, text
+    }
+    
   let shape: TextShape
   let originalText: String
   let text: String
-
+    
+    public var currentShape:Shape{
+          return shape;
+     }
+    
   public init(
     shape: TextShape,
     originalText: String,
@@ -122,18 +264,37 @@ public struct EditTextOperation: DrawingOperation {
     shape.text = originalText
     drawing.update(shape: shape)
   }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.shape, forKey:.shape)
+        try container.encode(self.originalText, forKey:.originalText)
+        try container.encode(self.text, forKey:.text)
+    }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.shape = try values.decode(TextShape.self, forKey:.shape)
+        self.originalText = try values.decode(String.self, forKey: .originalText)
+        self.text = try values.decode(String.self, forKey: .text)
+    }
 }
 
 /**
  Change the user-specified width of a text shape
  */
 public struct ChangeExplicitWidthOperation: DrawingOperation {
+    private enum CodingKeys: String, CodingKey {
+      case shape,originalWidth, originalBoundingRect,newWidth,newBoundingRect
+    }
   let shape: TextShape
   let originalWidth: CGFloat?
   let originalBoundingRect: CGRect
   let newWidth: CGFloat?
   let newBoundingRect: CGRect
-
+    
+    public var currentShape:Shape{
+          return shape;
+     }
+    
   init(
     shape: TextShape,
     originalWidth: CGFloat?,
@@ -159,5 +320,21 @@ public struct ChangeExplicitWidthOperation: DrawingOperation {
     shape.boundingRect = originalBoundingRect
     drawing.update(shape: shape)
   }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.shape, forKey:.shape)
+        try container.encode(self.originalWidth, forKey:.originalWidth)
+        try container.encode(self.originalBoundingRect, forKey:.originalBoundingRect)
+        try container.encode(self.newWidth, forKey:.newWidth)
+        try container.encode(self.newBoundingRect, forKey:.newBoundingRect)
+    }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.shape = try values.decode(TextShape.self, forKey:.shape)
+        originalBoundingRect = try values.decode(CGRect.self, forKey: .originalBoundingRect)
+        newBoundingRect = try values.decode(CGRect.self, forKey: .newBoundingRect)
+        originalWidth = try values.decode(CGFloat.self, forKey: .originalWidth)
+        newWidth = try values.decode(CGFloat.self, forKey: .newWidth)
+    }
 }
 

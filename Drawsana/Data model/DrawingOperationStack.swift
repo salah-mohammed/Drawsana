@@ -89,7 +89,7 @@ public protocol DrawingOperationStackDelegate: AnyObject {
 /**
  All drawing operations must implement this protocol
  */
-public protocol DrawingOperation {
+public protocol DrawingOperation:Decodable,Codable {
   /**
    Return true iff this operation should be added to the undo stack. Default
    implementation returns `true`.
@@ -101,6 +101,9 @@ public protocol DrawingOperation {
   func shouldAdd(to operationStack: DrawingOperationStack) -> Bool
   func apply(drawing: Drawing)
   func revert(drawing: Drawing)
+  var currentShape:Shape{get}
+  func encode(to encoder: Encoder) throws
+  init(from decoder: Decoder) throws
 }
 public extension DrawingOperation {
   func shouldAdd(to operationStack: DrawingOperationStack) -> Bool { return true }
